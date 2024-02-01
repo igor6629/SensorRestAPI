@@ -4,6 +4,7 @@ import com.example.models.Measurement;
 import com.example.models.Sensor;
 import com.example.repositories.MeasurementRepository;
 import com.example.util.MeasurementNotCreatedException;
+import com.example.util.MeasurementNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,18 +34,16 @@ public class MeasurementService {
     }
 
     public Measurement findMeasurementById(int id) {
-        return measurementRepository.findById(id).orElse(null);
+        return measurementRepository.findById(id).orElseThrow(MeasurementNotFoundException::new);
     }
 
     @Transactional
     public void createNewMeasurement(Measurement measurement) {
 
-        // TODO: Probably need to move this check to controller
         Sensor currentSensor = sensorService.getSensorByName(measurement.getSensor().getName()).orElse(null);
 
-        if (currentSensor == null) {
+        if (currentSensor == null)
             throw new MeasurementNotCreatedException("The sensor with this name did not find");
-        }
 
         measurement.setCreatedAt(LocalDateTime.now());
         measurement.setSensor(currentSensor);

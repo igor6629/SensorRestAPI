@@ -39,7 +39,6 @@ public class SensorController {
         Sensor newSensor = convertToSensor(sensor);
         sensorValidator.validate(newSensor, bindingResult);
 
-        //TODO: Make a new function in util package to handle errors
         if (bindingResult.hasErrors()) {
             StringBuilder message = new StringBuilder();
             List<FieldError> errors = bindingResult.getFieldErrors();
@@ -55,10 +54,19 @@ public class SensorController {
         return ResponseEntity.ok(HttpStatus.OK);
     }
 
+    @GetMapping()
+    public List<Sensor> getAllSensors() {
+        return sensorService.findAllSensors();
+    }
+
+    @GetMapping("/{id}")
+    public Sensor getSensorById(@PathVariable("id") int id) {
+        return sensorService.findSensorById(id);
+    }
+
     public Sensor convertToSensor(SensorDTO sensorDTO) {
         return modelMapper.map(sensorDTO, Sensor.class);
     }
-
 
     @ExceptionHandler
     private ResponseEntity<SensorErrorResponse> handleException(SensorNotFoundException e) {

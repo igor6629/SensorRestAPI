@@ -12,29 +12,29 @@ public class MeasurementDTO {
     @Min(value = -100, message = "Value must be between -100 and 100")
     @Max(value = 100, message = "Value must be between -100 and 100")
     @Column(name = "value")
-    private float value;
+    private Float value;
 
     @NotNull(message = "Raining must not be empty")
     @Column(name = "raining")
-    private boolean raining;
+    private Boolean raining;
 
     @ManyToOne
     @JoinColumn(name = "sensor_id", referencedColumnName = "name")
     private Sensor sensor;
 
-    public float getValue() {
+    public Float getValue() {
         return value;
     }
 
-    public void setValue(float value) {
+    public void setValue(Float value) {
         this.value = value;
     }
 
-    public boolean isRaining() {
+    public Boolean isRaining() {
         return raining;
     }
 
-    public void setRaining(boolean raining) {
+    public void setRaining(Boolean raining) {
         this.raining = raining;
     }
 

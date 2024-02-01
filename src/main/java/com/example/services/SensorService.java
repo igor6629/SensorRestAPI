@@ -20,11 +20,11 @@ public class SensorService {
         this.sensorRepository = sensorRepository;
     }
 
-    public List<Sensor> getAllSensors() {
+    public List<Sensor> findAllSensors() {
         return sensorRepository.findAll();
     }
 
-    public Sensor getSensorById(int id) {
+    public Sensor findSensorById(int id) {
         return sensorRepository.findById(id).orElseThrow(SensorNotFoundException::new);
     }
 

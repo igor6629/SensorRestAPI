@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static com.example.util.ErrorsUtil.notCreatedException;
 
 @RestController
 @RequestMapping("/measurement")
@@ -35,11 +36,7 @@ public class MeasurementController {
 
     @GetMapping("/{id}")
     public Measurement getMeasurementById(@PathVariable("id") int id) {
-        Measurement measurement = measurementService.findMeasurementById(id);
-
-        System.out.println(measurement.getSensor().getName());
-
-        return measurement;
+        return measurementService.findMeasurementById(id);
     }
 
     @GetMapping("/rainyDaysCount")
@@ -50,15 +47,8 @@ public class MeasurementController {
     @PostMapping("/add")
     public ResponseEntity<HttpStatus> addNewMeasurement(@RequestBody @Valid MeasurementDTO measurementDTO, BindingResult bindingResult) {
 
-        if (bindingResult.hasErrors()) {
-            StringBuilder message = new StringBuilder();
-            List<FieldError> errors = bindingResult.getFieldErrors();
-
-            for (FieldError error : errors)
-                message.append(error.getField()).append(" - ").append(error.getDefaultMessage()).append(";");
-
-            throw new MeasurementNotCreatedException(message.toString());
-        }
+        if (bindingResult.hasErrors())
+            notCreatedException(bindingResult);
 
         measurementService.createNewMeasurement(convertToMeasurement(measurementDTO));
 
@@ -72,7 +62,7 @@ public class MeasurementController {
     @ExceptionHandler
     private ResponseEntity<SensorErrorResponse> handleException(MeasurementNotFoundException e) {
         SensorErrorResponse response = new SensorErrorResponse(
-                "Measurement with this id did not find!",
+                "The measurement by this id was not found",
                 System.currentTimeMillis()
         );
 
@@ -80,7 +70,7 @@ public class MeasurementController {
     }
 
     @ExceptionHandler
-    private ResponseEntity<SensorErrorResponse> handleException(MeasurementNotCreatedException e) {
+    private ResponseEntity<SensorErrorResponse> handleException(NotCreatedException e) {
         SensorErrorResponse response = new SensorErrorResponse(
                 e.getMessage(),
                 System.currentTimeMillis()

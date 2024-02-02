@@ -1,4 +1,5 @@
 package com.example.util;
 
-public class MeasurementNotFoundException extends RuntimeException{
+public class MeasurementNotFoundException extends RuntimeException {
+
 }

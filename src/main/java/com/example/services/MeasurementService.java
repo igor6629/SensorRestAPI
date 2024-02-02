@@ -3,8 +3,8 @@ package com.example.services;
 import com.example.models.Measurement;
 import com.example.models.Sensor;
 import com.example.repositories.MeasurementRepository;
-import com.example.util.MeasurementNotCreatedException;
 import com.example.util.MeasurementNotFoundException;
+import com.example.util.NotCreatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,7 +43,7 @@ public class MeasurementService {
         Sensor currentSensor = sensorService.getSensorByName(measurement.getSensor().getName()).orElse(null);
 
         if (currentSensor == null)
-            throw new MeasurementNotCreatedException("The sensor with this name did not find");
+            throw new NotCreatedException("The sensor by this name was not found");
 
         measurement.setCreatedAt(LocalDateTime.now());
         measurement.setSensor(currentSensor);
